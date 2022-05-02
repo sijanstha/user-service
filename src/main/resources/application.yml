@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: user-service
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+  datasource:
+    url: jdbc:postgresql://localhost:5432/userservice
+    password: secret
+    username: postgres
+    driver-class-name: org.postgresql.Driver
+
+server:
+  port: 8081
+

@@ -1,0 +1,66 @@
+import java.time.Instant
+
+plugins {
+    id 'org.springframework.boot' version '2.6.7'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id('com.google.cloud.tools.jib') version '2.7.1'
+    id 'java'
+}
+
+group = 'com.sijan'
+version = '0.0.1'
+sourceCompatibility = '17'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    implementation 'org.springframework.security:spring-security-crypto:5.6.3'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'org.postgresql:postgresql'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+jib {
+
+    to {
+        image = "sijanstha/${project.name}:${project.version}"
+        tags = project.hasProperty('imageTag')
+                ? [version, "latest", project.getProperties().get('imageTag')]
+                : [version, "latest"]
+        auth {
+            username = "sijanstha"
+            password = "FMMvy;K^N;mjU8#"
+        }
+    }
+
+    from {
+        image = "eclipse-temurin:17@sha256:7726670d3da32faebea14b6b4dad3d4541a2631e02c69df5095ffa8740663b64"
+    }
+
+    container {
+        mainClass = "com.sijan.userservice.UserserviceApplication"
+        jvmFlags = List.of(
+                "-server",
+                "-Duser.timezone=UTC",
+                "-Xms128m",
+                "-Xmx1g"
+        )
+        creationTime = Instant.now().toString()
+    }
+}
