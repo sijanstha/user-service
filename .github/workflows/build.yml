@@ -42,19 +42,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Build
-        run: ./gradlew build
-        env:
-          POSTGRES_DB_HOST: localhost
-          POSTGRES_DB_PORT: 5432
-          POSTGRES_DB_NAME: userservice
-          POSTGRES_DB_USERNAME: postgres
-          POSTGRES_DB_PASSWORD: postgres
+        run: ./gradlew build -Dspring.profiles.active=github
 
       - name: Run Tests
-        run: ./gradlew test
-        env:
-          POSTGRES_DB_HOST: localhost
-          POSTGRES_DB_PORT: 5432
-          POSTGRES_DB_NAME: userservice
-          POSTGRES_DB_USERNAME: postgres
-          POSTGRES_DB_PASSWORD: postgres
+        run: ./gradlew test -Dspring.profiles.active=github
