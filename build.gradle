@@ -43,10 +43,6 @@ jib {
         tags = project.hasProperty('imageTag')
                 ? [version, "latest", project.getProperties().get('imageTag')]
                 : [version, "latest"]
-        auth {
-            username = "sijanstha"
-            password = "FMMvy;K^N;mjU8#"
-        }
     }
 
     from {
