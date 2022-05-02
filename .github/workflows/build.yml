@@ -28,12 +28,12 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/build.gradle') }}
           restore-keys: ${{ runner.os }}-m2
       #Run Tests
       - name: Build
-        run: ./gradle build
+        run: ./gradlew build
       - name: Run Tests
-        run: ./gradle test
+        run: ./gradlew test
       - name: Publish Image
-        run: ./gradle jib
+        run: ./gradlew jib
