@@ -9,25 +9,26 @@ jobs:
   runner-job:
     runs-on: ubuntu-latest
 
-  services:
-    postgres:
-      image: postgres
-    env:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DATABASE: userservice
-      # Set health checks to wait until postgres has started
-      options: >-
-        --health-cmd pg_isready
-        --health-interval 10s
-        --health-timeout 5s
-        --health-retries 5
-      ports:
-        # Maps tcp port 5432 on service container to the host
-        - 5432:5432
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DATABASE: userservice
+          # Set health checks to wait until postgres has started
+          options: >-
+            --health-cmd pg_isready
+            --health-interval 10s
+            --health-timeout 5s
+            --health-retries 5
+          ports:
+            # Maps tcp port 5432 on service container to the host
+            - 5432:5432
 
 
   build-and-test:
     name: Build and test
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - name: Set up JDK
