@@ -28,5 +28,15 @@ jobs:
         with:
           java-version: '17'
 
+      - name: Cache Maven packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/build.gradle') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build
+        run: ./gradlew build -Dspring.profiles.active=github
+
       - name: Run tests
         run: ./gradlew test -Dspring.profiles.active=github
