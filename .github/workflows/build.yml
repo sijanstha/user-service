@@ -54,7 +54,4 @@ jobs:
           java-version: '17'
 
       - name: Publish to Dockerhub
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-        run: ./gradlew -PimageTag=${{github.run_number}} jib
+        run: ./gradlew -PimageTag=${{ github.run_number }} -PDOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }} -PDOCKERHUB_PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }} jib

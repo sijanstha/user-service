@@ -44,8 +44,8 @@ jib {
                 ? [version, "latest", project.getProperties().get('imageTag')]
                 : [version, "latest"]
         auth{
-            username= System.getenv("DOCKERHUB_USERNAME")
-            password= System.getenv("DOCKERHUB_PASSWORD")
+            username= project.hasProperty('DOCKERHUB_USERNAME') ? project.getProperties().get('DOCKERHUB_USERNAME') : ""
+            password= project.hasProperty('DOCKERHUB_PASSWORD') ? project.getProperties().get('DOCKERHUB_PASSWORD') : ""
         }
     }
 
