@@ -1,0 +1,41 @@
+version: "3.5"
+services:
+  db:
+    container_name: postgres-container
+    image: postgres:14.1-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: userservice
+      PGDATA: /data/postgres
+    volumes:
+      - db:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - micro-service-net
+    restart: unless-stopped
+
+  user-service:
+    container_name: user-service-container
+    image: sijanstha/userservice:0.0.1
+    depends_on:
+      - db
+    ports:
+      - 8081:8081
+    networks:
+      - micro-service-net
+    environment:
+      POSTGRES_DB_HOST: micro-service-net
+      POSTGRES_DB_PORT: 5432
+      POSTGRES_DB_NAME: userservice
+      POSTGRES_DB_USERNAME: postgres
+      POSTGRES_DB_PASSWORD: postgres
+      spring_profiles_active: default
+
+networks:
+  micro-service-net:
+    driver: bridge
+
+volumes:
+  db:
