@@ -6,6 +6,7 @@ import com.sijan.userservice.model.RoleDomain;
 import com.sijan.userservice.model.RoleListResponse;
 import com.sijan.userservice.service.RoleService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.Optional;
 
+@Slf4j
 @RestController
 @RequestMapping("api/role")
 @AllArgsConstructor

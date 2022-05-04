@@ -16,21 +16,43 @@ services:
       - micro-service-net
     restart: unless-stopped
 
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin-container
+    ports:
+      - 9411:9411
+    networks:
+      - micro-service-net
+
+  eureka-server:
+    image: sijanstha/eureka-server
+    container_name: eureka-server-container
+    ports:
+      - 8761:8761
+    networks:
+      - micro-service-net
+    depends_on:
+      - zipkin
+    environment:
+      spring_profiles_active: docker
+
   user-service:
     container_name: user-service-container
     image: sijanstha/userservice:0.0.1
     depends_on:
       - db
+      - zipkin
+      - eureka-server
     ports:
       - 8081:8081
     networks:
       - micro-service-net
     environment:
-      POSTGRES_DB_HOST: micro-service-net
+      POSTGRES_DB_HOST: db
       POSTGRES_DB_PORT: 5432
       POSTGRES_DB_NAME: userservice
       POSTGRES_DB_USERNAME: postgres
-      POSTGRES_DB_PASSWORD: postgres
+      POSTGRES_DB_PASSWORD: password
       spring_profiles_active: default
 
 networks:

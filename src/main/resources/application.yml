@@ -11,7 +11,12 @@ spring:
     password: ${POSTGRES_DB_PASSWORD}
     username: ${POSTGRES_DB_USERNAME}
     driver-class-name: org.postgresql.Driver
+  zipkin:
+    base-url: http://zipkin:9411
 
 server:
   port: 8081
-
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
