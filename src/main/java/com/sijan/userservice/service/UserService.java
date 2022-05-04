@@ -8,7 +8,7 @@ import com.sijan.userservice.repo.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -23,11 +23,12 @@ public class UserService {
     private UserRepository userRepository;
     private UserServiceCache.RoleCache roleCache;
     private UserMapper mapper;
-    private PasswordEncoder passwordEncoder;
+    private BCryptPasswordEncoder passwordEncoder;
 
     public Optional<UserDomain> create(UserDomain request) {
         request.validate();
         User entity = mapper.toEntity(request);
+        entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         List<Role> roleList = request.getRoleIds()
                 .stream()
                 .map(id -> {
@@ -55,19 +56,18 @@ public class UserService {
         return Optional.empty();
     }
 
-    public Boolean checkUserForAuthentication(String email, String password) {
+    public UserDomain checkUserForAuthentication(String email, String password) {
         if (!StringUtils.hasText(email) || !StringUtils.hasText(password))
-            return false;
+            throw new IllegalStateException("Invalid email or password");
 
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isEmpty())
-            return false;
+            throw new IllegalStateException("User with email " + email + " not found");
 
-        String hashedPassword = passwordEncoder.encode(password);
-        if (!optionalUser.get().getPassword().equals(hashedPassword))
-            return false;
+        if (!passwordEncoder.matches(password, optionalUser.get().getPassword()))
+            throw new IllegalStateException("Email or password doesn't match");
 
-        return true;
+        return mapper.toDomain(optionalUser.get());
     }
 
     public Optional<UserDomain> getByEmail(String email) {
@@ -79,7 +79,7 @@ public class UserService {
     }
 
     public Optional<UserDomain> getById(Integer id) {
-        Optional<User> optionalUser = userRepository.findById(id );
+        Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isEmpty())
             return Optional.empty();
 

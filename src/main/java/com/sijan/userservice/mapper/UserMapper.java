@@ -2,17 +2,12 @@ package com.sijan.userservice.mapper;
 
 import com.sijan.userservice.entity.User;
 import com.sijan.userservice.model.UserDomain;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
 @Component
 public class UserMapper extends Mapper<User, UserDomain> {
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     public UserMapper() {
         super(new User(), new UserDomain());
@@ -23,7 +18,7 @@ public class UserMapper extends Mapper<User, UserDomain> {
         var entity = super.toEntity(domain);
         entity.setName(domain.getName());
         entity.setEmail(domain.getEmail());
-        entity.setPassword(passwordEncoder.encode(domain.getPassword()));
+        entity.setPassword(domain.getPassword());
         entity.setAddress(domain.getAddress());
         return entity;
     }

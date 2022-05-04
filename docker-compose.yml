@@ -38,7 +38,7 @@ services:
 
   user-service:
     container_name: user-service-container
-    image: sijanstha/userservice:0.0.1
+    image: sijanstha/userservice:latest
     depends_on:
       - db
       - zipkin
@@ -53,7 +53,7 @@ services:
       POSTGRES_DB_NAME: userservice
       POSTGRES_DB_USERNAME: postgres
       POSTGRES_DB_PASSWORD: password
-      spring_profiles_active: default
+      spring_profiles_active: docker
 
 networks:
   micro-service-net:
