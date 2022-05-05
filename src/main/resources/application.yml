@@ -1,22 +1,12 @@
 spring:
   application:
     name: user-service
-  jpa:
-    database: POSTGRESQL
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-  datasource:
-    url: jdbc:postgresql://${POSTGRES_DB_HOST}:${POSTGRES_DB_PORT}/${POSTGRES_DB_NAME}
-    password: ${POSTGRES_DB_PASSWORD}
-    username: ${POSTGRES_DB_USERNAME}
-    driver-class-name: org.postgresql.Driver
-  zipkin:
-    base-url: http://localhost:9411
 
 server:
   port: 8081
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
+
+userservice:
+  rabbitmq:
+    queue: userservice.queue
+    exchange: user.internal.exchange
+    routingKey: user.internal.notification.routing-key

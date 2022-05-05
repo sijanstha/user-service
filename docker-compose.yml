@@ -16,11 +16,20 @@ services:
       - micro-service-net
     restart: unless-stopped
 
+  rabbitmq:
+    image: rabbitmq:3.9-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - micro-service-net
+
   zipkin:
     image: openzipkin/zipkin
     container_name: zipkin-container
     ports:
-      - 9411:9411
+      - "9411:9411"
     networks:
       - micro-service-net
 
@@ -28,7 +37,7 @@ services:
     image: sijanstha/eureka-server
     container_name: eureka-server-container
     ports:
-      - 8761:8761
+      - "8761:8761"
     networks:
       - micro-service-net
     depends_on:
@@ -43,8 +52,9 @@ services:
       - db
       - zipkin
       - eureka-server
+      - rabbitmq
     ports:
-      - 8081:8081
+      - "8081:8081"
     networks:
       - micro-service-net
     environment:

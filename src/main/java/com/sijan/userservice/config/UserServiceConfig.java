@@ -20,7 +20,12 @@ public class UserServiceConfig {
 
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public RabbitMQProperty rabbitMQProperty() {
+        return new RabbitMQProperty();
     }
 }

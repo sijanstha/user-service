@@ -1,6 +1,4 @@
 spring:
-  application:
-    name: user-service
   jpa:
     database: POSTGRESQL
     show-sql: true
@@ -13,9 +11,9 @@ spring:
     driver-class-name: org.postgresql.Driver
   zipkin:
     base-url: http://zipkin:9411
+  rabbitmq:
+    addresses: rabbitmq:5672
 
-server:
-  port: 8081
 eureka:
   client:
     service-url:

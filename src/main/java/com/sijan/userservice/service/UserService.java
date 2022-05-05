@@ -1,5 +1,9 @@
 package com.sijan.userservice.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sijan.userservice.broadcast.BroadcastRecord;
+import com.sijan.userservice.broadcast.ChangeRecordBroadcaster;
+import com.sijan.userservice.broadcast.EventType;
 import com.sijan.userservice.entity.Role;
 import com.sijan.userservice.entity.User;
 import com.sijan.userservice.mapper.UserMapper;
@@ -12,6 +16,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,6 +30,9 @@ public class UserService {
     private UserServiceCache.RoleCache roleCache;
     private UserMapper mapper;
     private BCryptPasswordEncoder passwordEncoder;
+    private ChangeRecordBroadcaster broadcaster;
+    private DateFormat dateFormat;
+    private ObjectMapper objectMapper;
 
     public Optional<UserDomain> create(UserDomain request) {
         request.validate();
@@ -43,10 +52,13 @@ public class UserService {
 
         try {
             User user = userRepository.saveAndFlush(entity);
+            UserDomain userDomain = mapper.toDomain(user);
 
-            // TODO: broadcast this user info to internal kafka topic
-            // so that other services will know
-            return Optional.ofNullable(mapper.toDomain(user));
+            broadcaster.broadcast(
+                    new BroadcastRecord("UserService.create", EventType.CREATED, objectMapper.valueToTree(userDomain), dateFormat.format(new Date()))
+            );
+
+            return Optional.ofNullable(userDomain);
         } catch (Exception e) {
             if (e instanceof DataIntegrityViolationException)
                 throw new IllegalStateException(String.format("Email %s already taken", request.getEmail()));
@@ -85,4 +97,5 @@ public class UserService {
 
         return Optional.ofNullable(mapper.toDomain(optionalUser.get()));
     }
+
 }
